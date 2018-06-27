@@ -1,0 +1,102 @@
+//Strandbeest Rocket Launcher Control
+//By Jeremy S. Cook
+//build video: https://www.youtube.com/watch?v=5BgsbKI_L3Q
+
+void setup() {
+  Serial.begin(9600); //start serial communication
+  pinMode(4, OUTPUT); //Motor Pin1 - right forward
+  pinMode(5, OUTPUT); //Motor Pin2 - right reverse
+  pinMode(6, OUTPUT); //Motor Pin3 - left forward
+  pinMode(7, OUTPUT); //Motor Pin4 - left backward
+  pinMode(10, OUTPUT); //Light1
+  pinMode(11, OUTPUT); //Light2
+//  digitalWrite(10, HIGH); //Light1 on initially
+//  digitalWrite(11, HIGH); //Light2 on initially
+
+}
+
+char a; //bluetooth variable
+
+void loop() {
+  //bluetooth controls:
+  if (Serial.available()) //may want to modify to stop automatically
+  {
+    a=(Serial.read());
+
+    //LEGS CONTROL
+    
+    if (a=='0') //start command to stop motors
+    {
+      digitalWrite(4, LOW); //pin 1 off
+      digitalWrite(5, LOW); //pin 2 off
+      digitalWrite(6, LOW); //pin 3 off
+      digitalWrite(7, LOW); //pin 4 off
+      
+    }
+    if (a=='1') //forward command
+    {
+      digitalWrite(5, LOW); //pin 2 off
+      digitalWrite(7, LOW); //pin 4 off
+      digitalWrite(4, HIGH); //right forward
+      digitalWrite(6, HIGH); //left forward
+    }
+    if (a=='2') //backward command
+    {
+      digitalWrite(4, LOW); //pin 1 off
+      digitalWrite(6, LOW); //pin 3 off
+      digitalWrite(5, HIGH); //right backward
+      digitalWrite(7, HIGH); //left backward
+    }
+    if (a=='3') //right turn command
+    {
+      digitalWrite(4, LOW); //pin 1 off
+      digitalWrite(7, LOW); //pin 4 off
+      digitalWrite(5, HIGH); //right backward
+      digitalWrite(6, HIGH); //left forward
+    }
+    if (a=='4') //left turn command
+    {
+      digitalWrite(5, LOW); //pin 2 off
+      digitalWrite(6, LOW); //pin 3 off
+      digitalWrite(4, HIGH); //right forward
+      digitalWrite(7, HIGH); //left backward
+    }
+    
+    //FIRE COMMANDS
+    if (a=='5') //FIRE1 command
+    {
+      pinMode(8, OUTPUT); //Fire Rocket1 - active low
+      digitalWrite(8, LOW); //fire control 1
+      for (int X = 0; X < 2; X++){  //blink lights and delay
+      digitalWrite(10, LOW); //Light1 off
+      delay(750);
+      digitalWrite(10, HIGH); //Light1 on
+      delay(750);
+      }
+      digitalWrite(8, HIGH); //turn fire relay off
+    }
+    if (a=='6') //FIRE2 command
+    {
+      pinMode(9, OUTPUT); //Fire Rocket2 - active low
+      digitalWrite(9, LOW); //fire control 2
+      for (int X = 0; X < 2; X++){  //blink lights and delay
+      digitalWrite(11, LOW); //Light2 off
+      delay(750);
+      digitalWrite(11, HIGH); //Light2 on
+      delay(750);
+      }
+      digitalWrite(9, HIGH); //turn off
+    }
+    if (a=='7') //lights on command
+    {
+      digitalWrite(10, HIGH); //Light1 on
+      digitalWrite(11, HIGH); //Light2 on
+    }
+    if (a=='8') //lights off command
+    {
+      digitalWrite(10, LOW); //Light1 off
+      digitalWrite(11, LOW); //Light2 off
+    }
+      
+  }
+}
